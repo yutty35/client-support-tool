@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Concerter - Parts Physical Inventory - ZIPファイルのダウンロード</title>
+		<link rel="stylesheet" href="../../w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-prism.css" _rel="text/css" />
+		
+		<!-- JQuery from Google site -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	</head>
+	<body class="ds-has-sticky-footer">
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<div class="homeButton">
+	<button class="ds-button _ds-flat _ds-basic _ds-bg-contextual-blue-3" id="return_to_home">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="./images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">レポート類変換ツール</h1>
+							<p class="ds-mar-b-0">
+<!-- w3ds template -->
+
+<script nonce=<%- nonce %>>
+	window.addEventListener("load", () => {
+		document.getElementById("download").addEventListener("click", (e) => {
+			download();
+		});
+
+		document.getElementById("return_to_home").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+	});
+	
+	const download = () => {
+		source_file_name = "/download/<%= zip_file_name %>"; 		// ./public/pdf/pdf_200331_155941.zip
+
+		/*
+		rc = test2("public/download/" + source_file_name);
+		rc = test2("./public/download/" + source_file_name);
+		rc = test2("/public/download/" + source_file_name);
+		rc = test2("download/" + source_file_name);
+		rc = test2("/download/" + source_file_name);  // 存在
+		rc = test2("./download/" + source_file_name);
+		rc = test2("../download/" + source_file_name);
+		rc = test2("../../download/" + source_file_name);
+		rc = test2("../../../download/" + source_file_name);
+		*/
+
+		download_file_name = source_file_name.slice(source_file_name.lastIndexOf("/") + 1);
+		source_file_name = "/download/" + download_file_name;
+
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+
+	//
+	// ファイルの存在チェックで使用
+	//
+	const test2 = (fp) => {
+		var flg = is_file2(fp);
+		if(flg==true){
+			alert('ファイルは存在します:' + fp);
+		}else{
+			alert('ファイルは存在しません' + fp);
+		}
+	}
+	
+	const is_file2 = (fp) => {
+		var flg=null;
+		$.ajax({
+			url: fp,
+			cache: false,
+			async:false
+		}).done(function(data) {
+			flg=true;
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			flg=false;
+		});
+		return flg;
+	}
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+</script>
+
+(download_pdf_files.ejs)
+
+<h2>
+<span class="ds-icon-download" tabindex="0" role="text" aria-label="admin"></span>
+Parts Physical Inventory - ZIPファイルのダウンロード
+</h2>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap ds-pad-t-1">
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-4" type="submit" name="button" value="zipfile" id="download">
+	<span class="ds-icon-download ds-text-contextual-green-4">
+	Download PDF File
+	</span></button>	
+</div>
+
+<p>
+<span class="ds-icon-warning-alt ds-text-contextual-red-3">
+ファイルは10分後に削除されます</span>
+</p>
+
+<form>
+<div class="ds-button-group-h ds-row ds-mar-t-3 ds-mar-l-r-0">
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-4" formMethod="get" formAction= "/">
+	<span class="ds-icon-arrow-left">
+	戻る</span></button>
+</div>
+</form>
+
+<!-- w3ds template -->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2 ds-heading-5">
+					<!-- a href="https://w3.ibm.com/help/#/article/urt" -->
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://github.ibm.com/w3/w3DS" target="_blank" class="ds-text-neutral-6 ds-font-weight-light">w3DS on GitHub</a>
+				</h5>
+			</div>
+			
+		</footer>
+		<script src="../../w3ds/w3ds.js"></script>
+	</body>
+</html>

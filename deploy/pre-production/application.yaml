@@ -1,0 +1,20 @@
+apiVersion: cirrus.ibm.com/v1alpha1
+kind: Application
+metadata:
+  name: client-support-tool-nonprod
+spec:
+  livenessProbe:
+    httpGet:
+      path: /health/ping
+    periodSeconds: 30
+    timeoutSeconds: 30
+  readinessProbe:
+    httpGet:
+      path: /health/ping
+    periodSeconds: 30
+    timeoutSeconds: 30
+  replicas: 1
+  quota: q512mb
+  envFrom:
+      - secretRef:
+          name: client-support-tool

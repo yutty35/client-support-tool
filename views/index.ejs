@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Client Support Tool</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+
+		<!-- JQuery from Google site -->
+		<!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" --><!-- /script -->
+	</head>
+	<body class="ds-has-sticky-footer">
+	
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">Client Support Tool</h1>
+							<p class="ds-mar-0">
+<!--- w3ds template --->
+
+<script nonce=<%- nonce %>>
+	window.addEventListener("load", () => {
+		document.getElementById("download_address_list").addEventListener("click", (e) => {
+			download();
+		})
+	});
+
+	const download = () => {
+		source_file_name = "./parts_physical_inventory/Physical_Inventory_Address_List.xlsx";
+
+		download_file_name = source_file_name;
+		download_file_name = download_file_name.slice(download_file_name.lastIndexOf("/") + 1);		
+
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name.slice(1), true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+</script>
+
+<h2>
+<span class="ds-icon-menu" tabindex="0" role="text" aria-label="admin">
+メニュー
+</h2>
+
+<!--
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-pdf ds-mar-0"></span>
+			単純改ページでPDFに変換 : AG770, AG764, etc
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p class="ds-mar-0">
+			<div class="ds-button-group-h ds-row ds-mar-0">
+				<form>
+				<button class="ds-button ds-basic ds-truncate ds-mar-0 ds-col-4" formMethod="get" formAction="/converter/report_to_pdf/select_file">
+					<span class="ds-icon-trash-can" tabindex="0" role="text">
+					レポートファイルの選択と変換</span>
+				</button>
+				</form>
+				
+				<ul>
+					<li>
+					各ページの左上の最初の4文字が以下のレポートに対応
+					<ul>
+						<li>
+						1IBM
+						<li>
+						1RC#
+					</ul>
+				</ul>
+			</div>
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-pdf ds-mar-0"></span>
+			PHYSICAL INVENTORY COUNTS DOCUMENT (PHYSICAL INVENTORY)をPDFに変換 : AG762
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p class="ds-mar-0">
+			<div class="ds-button-group-h ds-row ds-mar-0">
+				<form>
+				<button class="ds-button ds-basic ds-truncate ds-mar-0 ds-col-4" formMethod="get" formAction="/converter/parts_physical_inventory/select_file">
+					<span class="ds-icon-trash-can" tabindex="0" role="text">
+					レポートファイルの選択と変換</span>
+				</button>
+				</form>
+			</div>
+			</p>
+
+			<p>
+			宛先リスト
+			<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-col-12 ds-mar-0 ds-pad-0">
+				<div class="ds-pad-0 ds-col-2">
+					<form action="/converter/parts_physical_inventory/view_physical_inventory_address_file" method="get" enctype="multipart/form-data">
+						<button class="ds-button ds-basic ds-truncate">
+						<span class="ds-icon-view" tabindex="0" role="text" aria-label="admin"></span>
+						確認</button>
+					</form>
+				</div>
+				<div class="ds-pad-0 ds-col-2">
+					<form action="/converter/parts_physical_inventory/select_physical_inventory_address_file" method="get" enctype="multipart/form-data">
+						<button class="ds-button ds-basic ds-truncate">
+						<span class="ds-icon-upload" tabindex="0" role="text" aria-label="admin"></span>
+						更新</button>
+					</form>
+				</div>
+				<div class="ds-pad-0 ds-col-2">
+					<button class="ds-button ds-basic ds-truncate" type="submit" name="button" value="userid" id="download_address_list" _onclick="download();">
+					<span class="ds-icon-download" tabindex="0" role="text" aria-label="admin"></span>
+					ダウンロード
+					</button>	
+				</div>	
+			</div>
+
+			<ul>
+				<li>
+				宛先リストのフォーマットはダウンロードして確認
+				<li>
+				アップロードするファイルの名称は任意(アップロード後、"Physical_Inventory_Address_List.xlsx"にリネームされる)
+				<li>
+				<span class="ds-icon-warning-alt ds-text-contextual-red-3">
+				アプリのDeploymentのタイミングでファイルは削除されてしまうので、ローカルでの管理をしてください(そのうちDB保管に変更予定)
+				</span>
+			</ul>	
+			</p>
+		</div>
+	</div>
+</div>
+-->
+
+<!--
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-settings-adjust ds-mar-0"></span>
+			部品差異報告書 メール送信ログ (Temporary)
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<form action="/sendmail" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				メール送信ログ</button>
+			</form>
+			</ul>
+		</div>
+	</div>
+</div>
+-->
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-settings-adjust ds-mar-0"></span>
+			DMaSユーザー登録用HoDマクロ作成
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			申請書のEXCELファイルからHoD Macro生成
+			</p>
+
+			<form action="/converter/dmas_user_entry/select_file" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				レポートファイルの選択と変換</button>
+			</form>
+			
+			<p>
+			ユーザーリスト取得 (TBD)
+			</p>
+
+			<!-- form action="/converter/dmas_user_entry_sql/" method="get" enctype="multipart/form-data" -->
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				DMaS User List取得 (TBD)</button>
+			<!-- /form -->
+			
+			<p>
+			ユーザー登録ガイド
+			</p>
+			<ul>
+			<a href="/dmas_user_entry/QMFユーザー登録ガイド.pdf">
+			<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin">
+			ユーザー登録ガイド</a>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-group ds-mar-0"></span>
+			Inquiry Bluepage
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			Intranet ID, Emp No + PSCから詳細情報取得
+			</p>
+
+			<form action="/bluepage_info" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				Inquiry Bluepage Info</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-text-insert ds-mar-0"></span>
+			SQL
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			SQL to MF DB2
+			</p>
+
+			<form action="/sql" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				SQL</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-text-insert ds-mar-0"></span>
+			SQL - BPRS Viewer Prototype
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			BPRS Viewer Prototype
+			</p>
+
+			<form action="/sql_bprs" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				BPRS Viewer Prototype</button>
+			</form>
+
+			<form action="/sql_bprs/user_analysis" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+				BPRS User Access Analysis</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-cloud-download ds-mar-0"></span>
+			Cloudant Data Download
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			CloudantのデータをJSONファイルで根刮ぎDownload
+			</p>
+
+			<form action="/cloudant_download" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-cloud-download" tabindex="0" role="text" aria-label="admin"></span>
+				Cloudant Data Download</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-blue-3">
+			<span class="ds-icon-translate ds-mar-0"></span>
+			Watson Translator (Legacy)
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			Watson Translator (en⇔ja)
+			</p>
+
+			<form action="/watson_language_translator" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-translate" tabindex="0" role="text" aria-label="admin"></span>
+				Translator</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="accordion item">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-green-3">
+			<span class="ds-icon-list-bulleted ds-mar-0"></span>
+			View Access Logs
+		</button>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<p>
+			Access Logs of Client-Support-Tool and Revalidation
+			</p>
+
+			<form action="/access_logs" method="get" enctype="multipart/form-data">
+				<button class="ds-button ds-truncate ds-col-4 ds-basic">
+				<span class="ds-icon-list-bulleted" tabindex="0" role="text" aria-label="admin"></span>
+				View Access Logs</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<!-- ファイルの削除 -->
+<!--
+<div class="ds-accordion-container ds-mar-t-0 ds-mar-b-0" aria-labelledby="Column width accordion example">
+	<div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" aria-expanded="false" role="accordion item">
+		<!div class="ds-accordion-title ">
+		<button class="ds-accordion-title ds-col-12 ds-text-neutral-2 ds-bg-contextual-red-4">
+			<span class="ds-icon-translate" tabindex="0" role="text" aria-label="admin"></span>
+			管理 - Workファイルや作成したファイルの検索と一括削除
+		</button>
+		<!/div>
+		<div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<form action="/parts_physical_inventory/search_files" method="get" enctype="multipart/form-data">
+				<button class="ds-button _ds-basic ds-danger ds-col-4">
+				<span class="ds-icon-trash-can _ds-text-contextual-red-3">
+				過去のファイル検索と削除
+				</span>
+				</button>
+				<span class="ds-icon-checkmark ds-text-contextual-red-3" tabindex="0" role="text" aria-label="admin"></span>
+				通常、変換元のファイルと作成したファイルは約10分で自動削除される
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<!--- w3ds template --->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2_5 ds-heading-5">
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://w3.ibm.com/w3publisher/w3-privacy-notice" target="_blank" rel="noopener noreferrer">IBM Privacy Policy</a
+				</h5>
+			</div>
+		</footer>
+		<script src="/w3ds/w3ds.js"></script>
+	</body>
+</html>

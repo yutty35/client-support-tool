@@ -1,0 +1,52 @@
+{% extends "./parts_physical_inventory/base.html" %}
+{% block content %}
+
+<p>
+<span class="ds-icon-list-bulleted" tabindex="0" role="text" aria-label="admin">
+棚卸しデータ宛先リスト確認
+</p>
+
+
+<ul>
+	<li>
+	修正する場合は再度EXCELファイルをアップロード
+</ul>
+
+<script>
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+</script>
+<div class="ds-button-group-h ds-row ds-pad-0 ds-pad-b-1 ds-mar-0">
+	<button class="ds-col-2 ds-offset-0 ds-button ds-basic ds-truncate" onclick="redirectTo('/');">
+	<span class="ds-icon-reset" tabindex="0" role="text" aria-label="admin">
+	戻る</span></button>
+</div>	
+
+<div class="ds-table-container ds-col-6">
+	<table class="ds-table ds-table-compact ds-striped ds-mar-0 ds-pad-0 ">
+		<tr class="ds-bg-contextual-blue-3">
+			<th>ストック</th><th>グループ</th>
+		</tr>
+{% for data in address_list %}
+{% if data[0] != "" %}
+		<tr>
+			<td>
+				{{ data[0] }}
+			</td>
+			<td>
+				{{ data[1] }}
+			</td>
+		</tr>
+{% endif %}
+{% endfor %}
+	</table>
+</div>
+
+<div class="ds-button-group-h ds-row ds-pad-0 ds-pad-t-1 ds-mar-0">
+	<button class="ds-col-2 ds-offset-0 ds-button ds-basic ds-truncate" onclick="redirectTo('/');">
+	<span class="ds-icon-reset" tabindex="0" role="text" aria-label="admin">
+	戻る</span></button>
+</div>	
+
+{% endblock %}

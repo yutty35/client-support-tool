@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Custom SQL</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+		<script src="/w3ds/w3ds.js"></script>
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+	</head>
+	<body class="ds-has-sticky-footer">
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<!--
+	Styles for details tag
+-->
+<style>
+	details summary.search {
+		list-style: none;
+		display: block;
+		color: #000000;
+	}
+	
+	details summary.list {
+	  list-style: none;
+	//  cursor: pointer;
+	//  padding: 20px;
+	//  background: #e4e4e4;
+	  color: #8D8D8D;
+	//  font-size: 2rem;
+	//  font-weight: bold;
+		display: block;
+	}
+	
+	<!--
+		for Safari and Chrome
+	-->
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	
+	details summary::before {
+		content: "+";
+	}
+	details[open] summary::before {
+		content: "-";
+	}
+</style>
+
+<div class="homeButton">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-10 ds-offset-1 ds-pad-b-3">
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">
+							<span class="ds-icon-text-align-justify _ds-text-contextual-blue-4 ds-icon-large ds-tooltip-trigger" tabindex="0" role="text" aria-label="admin"></span>
+							Custom SQL</h1>
+							<p class="ds-mar-b-2">
+<!--- w3ds template --->
+
+<script nonce=<%- nonce %>>
+	sql_log = <%- JSON.stringify(sql_log) %>;
+	file_name = "<%= file_name %>";
+	result = <%- JSON.stringify(result) %>;
+
+
+	window.addEventListener('load', () => {
+		document.getElementById("button_run_sql").addEventListener("click", (e) => {
+			
+			console.log("> Run SQL");
+
+			if (file_name != "") {
+				document.getElementById("badge_status").innerText = "";
+				document.getElementById("badge_records").innerText = "";
+				document.getElementById("sql_result").innerText = "";
+			}
+
+			document.getElementById("loader").style.display = "block";
+
+			rc = post("/sql/sql_custom/run");
+		});
+	
+		document.getElementById("button_clear_sql").addEventListener("click", (e) => {
+			console.log("> Clear SQL");
+			document.getElementById("sql").value = "";
+		});
+	
+		document.getElementById("button_return").addEventListener("click", (e) => {
+			console.log("> Return");
+			location.href = "/sql";
+		});
+
+		for (i = 0; i < sql_log.length; i++) {
+			if (document.getElementById('sql_log_' + i) != null) {
+				document.getElementById('sql_log_' + i).addEventListener('click', (e) => {
+					console.log("sql: ", i, e.target.innerText.trim());
+					rc = setSql(e.target.innerText.trim().replace(/<br>/g, "\n"));
+				});
+			}
+		}
+
+		if (document.getElementById("download") != null) {
+			document.getElementById("download").addEventListener("click", (e) => {
+				console.log("> Download (EXCEL)");
+				rc = download();
+			});
+		}
+
+		if (document.getElementById("download_json") != null) {
+			document.getElementById("download_json").addEventListener("click", (e) => {
+				console.log("> Download (JSON)");
+				rc = download_json();
+			});
+		}
+	});
+	
+	const post = (url) => {
+		console.log(url)
+		var form = document.forms[0];
+		form.method = "POST";
+		form.action = url;
+		form.submit();
+	}
+
+	const setSql = (sql) => {
+		document.getElementById("sql").value = "";
+		document.getElementById("sql").value = sql;
+	}
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+
+	const download = () => {
+		source_file_name = "/download/<%= file_name %>";
+		download_file_name = "<%= file_name %>";
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+
+	const download_json = () => {
+		source_file_name = "/download/<%= json_file_name %>";
+		download_file_name = "<%= json_file_name %>";
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+</script>
+
+
+<form>
+<div class="ds-flex ds-flex-fill ds-flex-align-items-start ds-flex-row ds-flex-wrap ds-pad-t-1">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		HOST Node
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-10 ds-mar-l-1">
+		<% checked_qhbd = checked_qhcn = checked_qhea = checked_qhbo = checked_baiw = checked_temp = "" %>
+		<% if (host_node == "qhbd") { checked_qhbd = "checked" } %>
+		<% if (host_node == "qhcn") { checked_qhcn = "checked" } %>
+		<% if (host_node == "qhea") { checked_qhea = "checked" } %>
+		<% if (host_node == "qhbo") { checked_qhbo = "checked" } %>
+		<% if (host_node == "baiw") { checked_baiw = "checked" } %>
+		<% if (host_node == "temp") { checked_temp = "checked" } %>
+
+		<div class="ds-input-container ds-mar-0 ds-pad-0 ds-pad-0">
+			<div class="ds-input-radio-group ds-flex" role="host_node">
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhbd" class="ds-input" value="qhbd" <%= checked_qhbd %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhbd">QHBD</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhcn" class="ds-input" value="qhcn" <%= checked_qhcn %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhcn">QHCN</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhea" class="ds-input" value="qhea" <%= checked_qhea %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhea">QHEA</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhbo" class="ds-input" value="qhbo" <%= checked_qhbo %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhbo">QHBO</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_baiw" class="ds-input" value="baiw" <%= checked_baiw %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_baiw">BAIW</label>
+				</div>
+				<div class="ds-input-radio">
+					<input type="radio" name="host_node" id="host_node_temp" class="ds-input" value="temp" <%= checked_temp %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_temp">TEMP</label>
+				</div>
+			</div>
+
+			<details class="ds-text-small">
+				<summary class="list">
+					<span class="ds-text-small ds-text-neutral-5">
+					MF DB2 Setup
+					</span>
+				</summary>
+				<span class="ds-mar-0 ds-pa-0 ds-text-italic ds-text-neutral-5">
+					<ul>
+						<li>
+						<%= db2_server_info.qhbd %>
+						<li>
+						<%= db2_server_info.qhcn%>
+						<li>
+						<%= db2_server_info.qhea %>
+						<li>
+						<%= db2_server_info.qhbo %>
+						<li>
+						<%= db2_server_info.baiw %>
+					</ul>
+				</span>
+			</details>
+		</div>
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-pad-l-1 ds-col-8">
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap ds-pad-0">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		User ID
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<div class="ds-input-container ds-mar-0 ds-pad-0">
+			<input type="text" class="ds-input ds-small" id="userid" name="userid" value="<%= uid %>">
+		</div>
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-pad-l-1 ds-col-7">
+		<span class="ds-text-small ds-text-italic">
+		TSSグループコネクト申請書で****DBMに権限を追加
+		</span>
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		Password
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<div class="ds-input-container ds-mar-0 ds-pad-0">
+			<input type="password" class="ds-input ds-small" id="password" name="password" value="<%= pw %>">
+		</div>
+	</div>
+</div>
+
+<div class="ds-mar-0 ds-pad-0 ds-pad-t-1">
+	SQL
+	<textarea rows="5" id="sql" name="sql" class="ds-input" name="sql"><%= sql %></textarea>
+</div>
+</form>
+
+
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0 _ds-mar-t-1">
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-play-filled-alt" id="button_run_sql">
+	Run
+	</button>
+
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-back-to-top" id="button_clear_sql">
+	Clear
+	</button>
+
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-arrow-left" id="button_return">
+	Return
+	</button>
+</div>
+
+<div id="sql_log" class="ds-mar-0 ds-pad-0 ds-pad-t-1">
+
+	<div class="ds-flex ds-flex-fill ds-flex-flex-start ds-flex-row ds-flex-nowrap">
+		<div class="ds-mar-0 ds-pad-0 ds-mar-r-1 ds-col-6">
+
+			<details class="" _open>
+				<summary class="list">
+					<span class="ds-icon-copy"></span>
+						Your SQLs - Last 20
+						<span class="ds-text-small ds-text-italic">
+							<span class="ds-icon-copy"></span> Click and Copy to SQL field
+						</span>
+					</span>
+				</summary>
+				<span class=" ds-text-neutral-5">
+			
+				<ol>
+					<!--
+					ex.,
+					<li>select * from ch86u1.ch86dels
+					<li>select * from cm90u9.CM90TCLS
+					<li>select req_number, status from cm90u9.CM90TBAS where REQ_NUMBER = 'xxxxx'
+					</span>
+					--> 
+			
+			<% if (sql_log.length < 20) { len = sql_log.length } else { len = 20 } %>
+			<% for(i = 0; i < len; i++) { %>
+			<%# for(i = 0; i < sql_log.length; i++) { %>
+				<% if (sql_log[i].user_id == user_id) { %>
+						<li>
+						<span id="sql_log_<%= i %>">
+						<%= sql_log[i].sql.replace(/\r/g, "").replace(/\n/g, "<br>") %>
+						</span>
+						</li>
+				<% } %>
+			<% } %>
+				<ol>
+				</span>
+			</detail>
+	
+		</div>
+		<div class="ds-mar-0 ds-pad-0 ds-mar-r-1 ds-col-6">
+
+			<details class="">
+				<summary class="list">
+					<span class="ds-icon-copy"></span>
+						Other's SQLs - Last 20
+						<span class="ds-text-small ds-text-italic">
+							<span class="ds-icon-copy"></span> Click and Copy to SQL field
+						</span>
+					</span>
+				</summary>
+				<span class=" ds-text-neutral-5">
+			
+				<ol>
+					<% if (sql_log.length < 20) { len = sql_log.length } else { len = 20 } %>
+					<% for(i = 0; i < len; i++) { %>
+					<% if (sql_log[i].user_id != user_id) { %>
+						<li>
+						<span id="sql_log_<%= i %>">
+						<%= sql_log[i].sql.replace(/\r/g, "").replace(/\n/g, "<br>") %>
+						</span>
+						</li>
+					<% } %>
+					<% } %>
+				<ol>
+				</span>
+			</detail>
+	
+		</div>
+	</div>
+</div>
+
+<% if (file_name != "") { %>
+	<div class="ds-mar-0 ds-pad-0 ds-pad-t-1 ds-icon-box">
+		Result
+		<div id="badge_status" class="ds-badge ds-secondary ds-mar-t-1">
+			Status: <%= status %>
+		</div>
+		<div id="badge_records" class="ds-badge ds-secondary">
+			<%= result.length %> records
+		</div>
+	</div>
+	</p>
+	
+	<div class="ds-table-container ds-button-group-h ds-mar-0 ds-pad-0">
+		<button class="ds-button ds-basic ds-button ds-small ds-truncate ds-col-4" name="button" value="download" id="download">
+			<span class="ds-icon-download">
+				<span class="ds-icon-xls">
+					Donwload SQL Result (EXCEL)
+				</span>
+			</span>
+		</button>
+
+		<button class="ds-button ds-basic ds-button ds-small ds-truncate ds-col-4" name="button" value="download_json" id="download_json">
+			<span class="ds-icon-download">
+				<span class="ds-icon-json">
+					Donwload SQL Result (JSON)
+				</span>
+			</span>
+		</button>
+	</div>
+<% } %>
+
+
+<!-- LOADER -->
+<div id="loader" class="ds-pad-t-b-2" hidden>
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container ds-text-align-center">
+			<span class="ds-icon-sentiment-smile" tabindex="0" role="text" aria-label="admin"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="sql_result">
+<% if (status == "normal_end") { %>
+	<div class="ds-bg-contextual-green-1 ds-mar-0 ds-pad-1">
+		Node : <%= host_node.toUpperCase() %>
+		<br>
+		SQL: <%= sql %>
+		<br>
+	</div>
+
+	<% if (result != "") { %>
+		<div class="ds-bg-contextual-blue-1 ds-mar-0 ds-pad-1">
+			<pre>
+<%- JSON.stringify(result, null, "\t") %>
+			</pre>
+		</div>
+	<% } %>	
+<% } else if (status == "error") { %>
+	<div class="ds-bg-contextual-red-1 ds-mar-0 ds-pad-1">
+		<pre>
+<%- result %>
+		</pre>
+	</div>
+<% } else {  %>
+	<div class="ds-bg-neutral-3 ds-mar-0 ds-pad-1">
+	</div>
+<% } %>
+
+</div>
+<div class="ds-text-small ds-text-neutral-5">
+Status : <%= status %>
+</div>
+
+<details class="ds-text-small ds-mar-t-1">
+	<summary class="list">
+		<span class="ds-text-small ds-text-neutral-5">
+		Raw Data
+		</span>
+	</summary>
+	<span class="ds-mar-0 ds-pa-0 ds-text-italic ds-text-neutral-5">
+<%- JSON.stringify(result, null, "\t") %>
+	</span>
+</details>
+
+<details class="ds-text-small ds-mar-t-1">
+	<summary class="list">
+		<span class="ds-text-small ds-text-neutral-5">
+		sql_log
+		</span>
+	</summary>
+	
+	<span class="ds-mar-0 ds-pa-0 ds-text-italic ds-text-neutral-5">
+<pre>
+<%- JSON.stringify(sql_log, null, "\t") %>
+</pre>
+	</span>
+</details>
+
+</body>
+</html>

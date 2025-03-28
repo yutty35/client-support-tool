@@ -1,0 +1,231 @@
+reset<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>CH86 DMaS User Table検索<</title>
+		<link rel="stylesheet" href="../../w3ds/w3ds.css" type="text/css" />
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-data-tables.css" type="text/css" />
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-prism.css" type="text/css" />
+
+		<!-- JQuery from Google site -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!--
+	Stylesheet fot NPS/Feedback
+-->
+<style type="text/css">
+.feedbackButton {	
+	width:160px;
+	height: 0px;
+	position:fixed;
+	z-index:1;
+	top: 50%;
+	right: -30px;
+	transform: rotate(-90deg);
+}
+
+.homeButton {
+	width: 60px;
+//	height: 0px;
+	position:fixed;
+	z-index:1;
+	top: 3%;
+	right: 20px;
+}
+</style>
+
+	</head>
+	<body class="ds-has-sticky-footer">
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">CH86 DMaS User Table検索</h1>
+							<p class="ds-mar-b-0">
+<!-- w3ds template -->
+
+
+<script nonce=<%- nonce %>>
+	window.addEventListener("load", () => {
+		document.getElementById("loader").style.display = "block";
+	});
+
+	document.getElementById("userid").addEventListener("click", (e) => {
+		document.getElementById("loader").style.display = "block";
+		document.getElementById("result").style.display = "nonw";
+	});
+
+/*
+	$(function() {
+		$("#loader").show();
+	});
+	
+	const loader = () => {
+		$("#loader").show();
+		$("#result").hide();
+	}
+*/
+</script>
+
+
+<form name="menu" action="/converter/dmas_user_entry_sql" method="post">
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap">
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-2" type="submit" name="button" value="user_list" id="userid" _onclick=loader()>
+	<span class="ds-icon-group _ds-text-contextual-blue-4" tabindex="0" role="text" aria-label="admin">
+	User List
+	</span></button>
+
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-2" type="submit" name="button" value="user_history" id="userhist">
+	<span class="ds-icon-group _ds-text-contextual-blue-4" tabindex="0" role="text" aria-label="admin">
+	User history
+	</span></button>
+
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-2" type="submit" name="button" value="access_log" id="accesslog">
+	<span class="ds-icon-menu _ds-text-contextual-blue-4" tabindex="0" role="text" aria-label="admin">
+	Access Log
+	</span></button>
+
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-2" type="submit" name="button" value="clear" id="clear">
+	<span class="ds-icon-new _ds-text-contextual-yellow-5" tabindex="0" role="text" aria-label="admin">
+	Clear
+	</span></button>
+
+	<button class="ds-button ds-basic ds-mar-b-0 _ds-push-2 ds-col-2" type="submit" name="button" value="return" id="return">
+	<span class="ds-icon-arrow-left _ds-text-contextual-red-3" tabindex="0" role="text" aria-label="admin">
+	Return
+	</span></button>
+	
+</div>
+
+<span class="ds-col-1 ds-mar-0 ds-pad-0 ds-pad-t-1">Search ID</span>
+<div class="ds-input-container ds-mar-0 ds-pad-0 ds-pad-t-1 ds-col-3">	
+	<input  type="text" class="ds-input" id="search_id" name="search_id" placeholder="*">
+</div>
+<br>
+<span class="ds-col-1 ds-mar-0 ds-pad-0">Table Name</span>
+<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-3">	
+	<input type="text" class="ds-input ds-disabled" id="table_name" name="table_name" value="<%=db_table %>" placeholder="CH86U1.*">
+</div>
+<br>
+<span class="ds-col-1 ds-mar-0 ds-pad-0">Total Qty</span>
+<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-3">	
+	<input type="text" class="ds-input ds-disabled" id="total_qty" name="total_qty" value="<%=data.length %>">
+</div>
+</form>
+
+
+<div id="loader">
+<div class="ds-loader">
+	<div class="ds-loader-container">
+		<div class="ds-loader-container"></div>
+	</div>
+</div>
+</div>
+
+</p>
+
+<div id="result" class="ds-table-container">
+
+<% if (data.length > 0) { %>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap ds-pad-b-1">
+	<button class="ds-button ds-basic ds-mar-b-0 ds-col-2" type="submit" name="button" value="userid" id="userid" onclick="download();">
+	<span class="ds-icon-download _ds-text-contextual-green-4" tabindex="0" role="text" aria-label="admin">
+	Download CSV File
+	</span></button>	
+</div>
+<% } %>
+
+<table class="ds-table ds-table-compact ds-striped">
+
+<% for ( i = 0; i < data.length; i++) { %>
+	<% if (i == 0) { %>
+		<tr class="ds-bg-contextual-blue-4">
+		<% Object.keys(data[i]).forEach( function(value) { %>
+			<th class="ds-text-neutral-warm-1">
+			<%= value %> 
+		<% }, data[i]); %>
+			</th>
+		</tr>
+	<% } %>
+
+	<tr>	
+	<% Object.keys(data[i]).forEach(function(value) { %>
+		<td>
+		<%= this[value] %>
+		</td>	
+	<% }, data[i]); %>
+	</tr>
+<% } %>
+
+</table>
+</div>
+
+
+<script nonce=<%- nonce %>>
+
+	const getCurrentTime = () => {
+		var date = new Date();
+
+		var d = date.getFullYear()
+			+ ('0' + (date.getMonth() + 1)).slice(-2)
+			+ ('0' + date.getDate()).slice(-2)
+			+ ('0' + date.getHours()).slice(-2)
+			+ ('0' + date.getMinutes()).slice(-2)
+			+ ('0' + date.getSeconds()).slice(-2);
+
+		return d;
+	};
+	
+	const download = () => {	
+//		db_table = runQuery.db_table.value.slice(7);
+//		db_table = db_table.toLowerCase();
+		db_table = menu.table_name.value.slice(7).toLowerCase();
+//		db_table = menu.table_name.value.toLowerCase();
+	
+		current_timestamp = getCurrentTime();
+				
+		var dl = document.createElement("a");
+		dl.download = db_table + " " + current_timestamp + ".csv"; // Download File Name
+		dl.href = "/download/ch86u1.csv"; // 対象ファイル (Server)
+
+		dl.dataset.downloadurl = ["text/plain", dl.href].join(":");
+
+		dl.click();
+	}
+
+	$(function() {
+		$("#loader").hide();
+	});
+	
+</script>
+
+
+<!--- w3ds template --->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2_5 ds-heading-5">
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://github.ibm.com/w3/w3DS" target="_blank" class="ds-text-neutral-6 ds-font-weight-light">w3DS on GitHub</a>
+				</h5>
+			</div>
+		</footer>
+		<script src="../../w3ds/w3ds.js"></script>
+	</body>
+</html>

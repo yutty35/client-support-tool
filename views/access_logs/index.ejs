@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Serach Bluepage Info</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+
+		<!-- https://tabulator.info -->
+		<!-- https://oopsoop.com/tabulator/ -->
+		<link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+	
+		<!-- select style one of them -->
+		<!link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_simple.min.css" rel="stylesheet">
+		<!link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet">
+		<!link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
+		<link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_bulma.min.css" rel="stylesheet">
+	</head>
+	<body class="ds-has-sticky-footer">
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">Access Logs</h1>
+							<p class="ds-mar-0">
+<!--- w3ds template --->
+
+
+<script nonce=<%- nonce %>>
+
+window.addEventListener("load", () => {
+	logs = <%- JSON.stringify(logs) %>;
+	appl_keys = Object.keys(logs);
+
+	content_block = document.getElementById("access_logs");
+	for (i = 0; i < appl_keys.length; i++) {
+		title = document.createElement("div");
+		title.textContent = appl_keys[i].toUpperCase();
+		title.className = "ds-heading-3 ds-text-contextual-blue-3";
+		content_block.appendChild(title);
+		
+		elm = document.createElement("div");
+		elm.id = "access_logs_" + appl_keys[i];
+		elm.textContent = "(table: " + appl_keys[i] + ")";
+		content_block.appendChild(elm);
+	}
+
+	for (i = 0; i < appl_keys.length; i++) {
+		data = logs[appl_keys[i]];
+
+		let request_list = new Tabulator("#access_logs_" + appl_keys[i], {
+			data: data,
+			layout:"fitColumns",
+			pagination: true, //ページネーションを有効化
+			paginationSize: 10, //1ページあたりに表示する行数
+			paginationInitialPage: 1, //テーブルが最初にロードされるときに表示するページ
+			paginationSizeSelector: true, //1ページあたりの行数をユーザが設定できるようにする trueならば[5, 10, 15, 20]
+			//paginationSizeSelector: [10, 25, 50, 100, true], //任意の配列を渡すことも可能 配列にtrueを渡すとAll
+			paginationCounter: 'rows', //フッタの左にページネーションカウンタを表示する rowsで行数カウンタ、pagesでページカウンタ
+			initialSort:[
+	        	{column:"timestamp", dir:"desc"}
+	        ],
+       		columns: [
+				{
+					title: "Appl Name",
+					field: "application",
+					formatter: "plaintext",
+					width: 250
+				},
+				{
+					title: "User ID",
+					field: "user_id",
+					formatter: "plaintext",
+					width: 250
+				},
+				{
+					title: "User Name",
+					field: "user_name",
+					formatter: "plaintext",
+					width: 250
+				},
+				{
+					title: "Status",
+					field: "status",
+					formatter: "plaintext",
+					width: 150
+				},
+				{
+					title: "Timestamp",
+					field: "timestamp",
+					formatter: "plaintext",
+				//	width: 200
+				},
+			]
+		});
+	}
+});
+
+
+window.addEventListener("load", () => {
+	document.getElementById("return_to_home").addEventListener("click", (e) => {
+		redirectTo("/");
+	});
+});
+
+const redirectTo = (url) => {
+	location.href = url;
+}
+
+const fetch_url = async(url) => {
+	$("#result").append(url);
+	fetch(url)
+		.then((response) => response.json())
+		.then((data) => {
+			if (data[0].status != "Error") {		
+				$("#result").append(i + " " + data[0].CNUM + "<br>")
+//					appendData(data[0]);
+			} else {
+				errorMessage(data[0]);
+			}
+		});
+}
+</script>
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+<div class="homeButton">
+	<button class="ds-button _ds-flat _ds-basic _ds-bg-contextual-blue-3" id="return_to_home">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+
+<h2>
+<span class="ds-icon-list-bulleted" tabindex="0" role="text" aria-label="admin">
+Access Logs of Client-Support-Tools and Revalidation
+</h2>
+
+<div id="access_logs"></div>
+
+<!-- LOADER -->
+<!--
+<div id="loader" class="ds-pad-t-5">
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container ds-text-align-center">
+			<span class="ds-icon-sentiment-smile" tabindex="0"></span>
+			Searching Blueopage Data
+			</div>
+		</div>
+	</div>
+</div>
+-->
+
+</span>
+
+
+</div>
+
+<!--- w3ds template --->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2_5 ds-heading-5">
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://github.ibm.com/w3/w3DS" target="_blank" class="ds-text-neutral-6 ds-font-weight-light">w3DS on GitHub</a>
+				</h5>
+			</div>
+		</footer>
+		<script src="/w3ds/w3ds.js"></script>
+	</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Concerter - 単純改ページ - 変換対象レポートのアップロード</title>
+		<link rel="stylesheet" href="../../w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="../../w3ds/w3ds-prism.css" _rel="text/css" />
+
+		<!-- JQuery from Google site -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body class="ds-has-sticky-footer">
+
+<div class="ds-slide-up ds-animation-delay-30">
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<div class="homeButton">
+	<button class="ds-button _ds-flat _ds-basic _ds-bg-contextual-blue-3" id="return_to_home">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="./images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">レポート類変換ツール</h1>
+							<p class="ds-mar-b-0">
+<!-- w3ds template -->
+(report_to_pdf/upload_file.ejs)
+
+<h2>
+<span class="ds-icon-upload" tabindex="0" role="text" aria-label="admin"></span>
+単純改ページ - 変換対象レポートのアップロード
+</h2>
+
+<script nonce=<%- nonce %>>
+	window.addEventListener("load", () => {
+		document.getElementById("loader").style.display = "none";
+
+		document.getElementById("return_to_home").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+
+		document.getElementById("process").addEventListener("click", (e) => {
+			process();
+		});
+	});
+	
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+
+	const process = () => {
+		document.getElementById("loader").style.display = "block";
+		document.getElementById("button").style.display = "none";
+	}
+</script>
+
+<div id="loader">
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container"></div>
+		</div>
+	</div>
+</div>
+
+<form enctype="multipart/form-data">
+
+<div id="button">
+	<div class="ds-row ds-file-upload-container">
+		<div class="ds-mar-0 ds-pad-0">
+			<label for="general-file-upload" class="ds-button ds-basic ds-col-6">
+			(1)
+			<span class="ds-icon-document" tabindex="0" role="text" aria-label="admin"></span>
+			ファイルの選択
+			<input type="file" class="ds-file-upload" name="file" id="general-file-upload">
+			</label>
+		</div>
+		<div class="ds-text-italic ds-text-contextual-green-4">
+	
+		</div>
+		<div>
+			<p class="ds-mar-t-0_5 ds-file-upload-msg">No file selected</p>
+		</div>
+	</div>
+	
+	<div class="ds-button-group-h ds-row">
+		<button class="ds-button ds-basic ds-col-6" formMethod="post" formAction="./upload_file" id="process">
+		(2)
+		<span class="ds-icon-upload" tabindex="0" role="text" aria-label="admin"></span>
+		ファイルのアップロード
+		<span class="ds-icon-arrow-right" tabindex="0" role="text" aria-label="admin"></span>
+		<span class="ds-icon-pdf" tabindex="0" role="text" aria-label="admin"></span>
+		PDFファイルへの変換
+		</button>
+	</div>
+	
+	<div class="ds-button-group-h ds-row ds-mar-t-3">
+		<button class="ds-button ds-basic ds-col-6" formAction="/">
+		<span class="ds-icon-arrow-left" tabindex="0" role="text" aria-label="admin">
+		戻る</span></button>
+	</div>
+</div>
+
+</form>
+
+<!-- w3ds template -->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2 ds-heading-5">
+					<!-- a href="https://w3.ibm.com/help/#/article/urt" -->
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://github.ibm.com/w3/w3DS" target="_blank" class="ds-text-neutral-6 ds-font-weight-light">w3DS on GitHub</a>
+				</h5>
+			</div>
+			
+		</footer>
+		<script src="/w3ds/w3ds.js"></script>
+	</body>
+</html>

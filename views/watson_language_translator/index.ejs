@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Translator</title>
+		<link rel="stylesheet" href="../w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="../w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="../w3ds/w3ds-prism.css" rel="text/css" />
+	</head>
+	<body class="ds-has-sticky-footer">
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">
+							<span class="ds-icon-translate _ds-text-contextual-blue-4 ds-icon-large ds-tooltip-trigger" tabindex="0" role="text" aria-label="admin"></span>
+							watson_language_translator (en⇔ja)</h1>
+							<p class="ds-mar-b-2">
+<!--- w3ds template --->
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<script src="/w3ds/w3ds.js"></script>
+
+<script nonce=<%- nonce %>>
+	last_original_text = "<%= original_text %>";
+
+	last_original_text = last_original_text.split("&lt;br&gt;").join("\n");
+	last_original_text = last_original_text.split("&#39;").join("'");
+	last_original_text = last_original_text.split("&#34;").join('"');
+	last_original_text = last_original_text.split("&amp;").join("&");
+	last_original_text = last_original_text.split("&lt;").join("<");
+	last_original_text = last_original_text.split("&gt;").join(">");
+
+	console.log(last_original_text);
+	
+	let status = "idle";
+	let auto_translation = "Yes";
+
+	window.addEventListener("load", () => {
+		document.getElementById("status").style.display = "none";
+
+		obj_org_text = document.getElementById("original_text");
+
+		init_text = obj_org_text.value;
+		if (init_text != last_original_text) {
+			init_text = last_original_text
+		}
+		obj_org_text.value = init_text;
+
+		const end = obj_org_text.value.length;
+		obj_org_text.focus();
+		obj_org_text.setSelectionRange(end, end);
+		
+		document.getElementById("return_to_home").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+
+		document.getElementById("translate").addEventListener("click", (e) => {			
+			console.log("> Translate");
+
+			document.getElementById("translated_text_1").value = "";
+			document.getElementById("translated_text_2").value = "";
+
+			if (document.getElementById("original_text").value.trim() != "") {
+				rc = get("/watson_language_translator/translate");
+			}
+		});
+
+		countdown = countdown_init = 15;
+
+		window.addEventListener("keydown", (e) => {
+			console.log("> Key Down");
+			countdown = countdown_init;
+
+			console.log("> auto_translation", auto_translation)
+			if (auto_translation == "Yes") {
+				countdown_timer();
+			}
+		});
+
+		setInterval(() => countdown_timer(), 100);
+
+		document.getElementById("auto_translation").checked = true;
+		document.getElementById("auto_translation").addEventListener("change", valueChange);
+
+		document.getElementById("clear").addEventListener("click", (e) => {	
+			console.log("> Clear");
+			document.getElementById("original_text").value = "";
+			document.getElementById("translated_text_1").value = "";
+			document.getElementById("translated_text_2").value = "";
+			status = "idle";
+		});
+
+		document.getElementById("copy_translated_text").addEventListener('click', (e) => {
+			val = document.getElementById("translated_text_1").value;
+			navigator.clipboard.writeText(val);
+		});
+	});
+	
+	const valueChange = (event) => {
+		if (event.target.checked) {
+			auto_translation = "Yes"
+		} else {
+			auto_translation = "No"
+			countdown = countdown_init;
+		}
+	}
+	
+	const countdown_timer = () => {
+	//	console.log("> countdown_timer:", countdown);
+		
+		if (auto_translation == "Yes") {
+			if (status == "idle") {
+				current_text = document.getElementById("original_text").value.trim();
+		
+				if ((current_text != "") & (last_original_text != current_text)) {
+					countdown_percent = Math.round((countdown / countdown_init) * 100);
+					document.getElementById("countdown_progress_bar").dataset.value = countdown_percent;
+		
+					if (countdown_percent == 0) {
+						countdown = countdown_init;
+						
+						status = "translating";
+		
+						document.getElementById("translated_text_1").value = "(translating)";
+						document.getElementById("translated_text_2").value = "";
+		
+						document.getElementById("status").style.display = "block";
+									
+						get("/watson_language_translator/translate");
+					} else {
+						document.getElementById("status").style.display = "none";
+						countdown -= 1;	
+					}
+				}
+			}
+		}
+	}
+	
+	const get = (url) => {
+		console.log(url)
+		var form = document.forms[0];
+		form.method = "GET";
+		form.action = url;
+		form.submit();
+	}
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+</script>
+
+<div class="homeButton">
+	<button class="ds-button _ds-flat _ds-basic _ds-bg-contextual-blue-3" id="return_to_home">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1">
+	</span>
+	</button>
+</div>
+
+
+<span id="status">
+	<div class="ds-badge ds-warning">Translating</div>
+</span>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-top ds-flex-row">
+	<div class="ds-pad-0 ds-col-6">
+		<div class="ds-mar-0">
+			Original Text (English or Japanese)
+		</div>
+		<div class="ds-mar-0 ds-pad-0">
+			<form>
+				<textarea rows="10" class="ds-input" id="original_text" name="original_text"><%#= original_text.replace("<br">, "\r\n") %></textarea>
+			</form>
+		</div>
+
+		<div class="ds-progress-bar ds-color">
+			<div class="ds-progress" role="progressbar" aria-label="Example of blue progress bar with current status indicator" id="countdown_progress_bar" data-value="100" data-min-value="0" data-max-value="100""></div>
+		</div>
+
+		<div class="ds-flex ds-flex-fill ds-flex-align-items-top ds-flex-row">
+			<div class="ds-pad-0">
+				<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0">
+					<button class="ds-button ds-basic ds-small _ds-col-1 ds-icon-translate" id="translate" name="translate"></button>
+					<button class="ds-button ds-basic ds-small _ds-col-1 ds-icon-reset" id="clear" name="clear"></button>			
+				</div>
+			</div>
+			<div class="ds-pad-l-1">
+				<div class="ds-input-container">
+					<div class="ds-input-checkbox-group" role="group">
+						<div class="ds-input-checkbox">
+							<input type="checkbox" id="auto_translation" class="ds-input" value="auto_translation">
+							<div class="ds-input-control"></div>
+							<label for="auto_translation">Auto Translation</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ds-pad-0 ds-col-6">
+		<div class="ds-mar-0">
+			Translation
+		</div>
+		<div class="ds-mar-0 ds-pad-0">
+			<textarea rows="10" class="ds-input ds-bg-contextual-blue-1" id="translated_text_1" name="translated_text_1" readonly><%= translated_text_1 %>
+			</textarea>
+		</div>
+
+		<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0">
+			<button class="ds-button ds-basic ds-small ds-col-1 ds-icon-copy" id="copy_translated_text" name="copy_translated_text"></button>
+		</div>	</div>
+</div>
+
+
+<!--
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0">
+	<button class="ds-button ds-basic ds-col-3 ds-icon-translate" formMethod="get" formAction="/watson_language_translator/translate">
+	Translate
+	</button>
+
+	<button class="ds-button ds-basic ds-col-3 ds-icon-return" formMethod="get" formAction="/watson_language_translator/clear">
+	Clear
+	</button>
+</div>
+-->
+
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-top ds-flex-row">
+	<div class="ds-pad-0 ds-col-6">
+
+	</div>
+	<div class="ds-pad-0 ds-col-6">
+		<div class="ds-mar-0">
+			Reverse translation
+		</div>
+		<div class="ds-mar-0 ds-pad-0">
+			<textarea rows="10" class="ds-input ds-bg-contextual-green-1" id="translated_text_2" name="translated_text_2" readonly><%= translated_text_2 %>
+			</textarea>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

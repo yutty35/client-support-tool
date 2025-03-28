@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BPRS SQL</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+		<script src="/w3ds/w3ds.js"></script>
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+
+		<!-- https://tabulator.info -->
+		<!-- https://oopsoop.com/tabulator/ -->
+		<link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+	</head>
+	<body class="ds-has-sticky-footer">
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<!--
+	Styles for details tag
+-->
+<style>
+	details summary.search {
+		list-style: none;
+		display: block;
+		color: #000000;
+	}
+	
+	details summary.list {
+	  list-style: none;
+	//  cursor: pointer;
+	//  padding: 20px;
+	//  background: #e4e4e4;
+	  color: #8D8D8D;
+	//  font-size: 2rem;
+	//  font-weight: bold;
+		display: block;
+	}
+	
+	<!--
+		for Safari and Chrome
+	-->
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	
+	details summary::before {
+		content: "+";
+	}
+	details[open] summary::before {
+		content: "-";
+	}
+</style>
+
+<div class="homeButton">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-10 ds-offset-1 ds-pad-b-3">
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">
+							<span class="ds-icon-text-align-justify _ds-text-contextual-blue-4 ds-icon-large ds-tooltip-trigger" tabindex="0" role="text" aria-label="admin"></span>
+							GET BPRS Data</h1>
+							<p class="ds-mar-b-2">
+<!--- w3ds template --->
+
+<script nonce=<%- nonce %>>
+	create_ts = <%- JSON.stringify(create_ts) %>;
+	result = <%- JSON.stringify(result) %>;
+	status = "<%= status %>";
+//	console.log(id, sql_result_excel, sql_result_json, status);
+
+	window.addEventListener('load', () => {
+		loader_elm = document.getElementById("loader")
+		loader_elm.style.display = "block";
+
+		document.getElementById("create_ts_from").value = create_ts.from;
+		document.getElementById("create_ts_to").value = create_ts.to;
+
+		//
+		// Buttons
+		//
+		document.getElementById("button_run_sql").addEventListener("click", (e) => {
+			console.log("> Run SQL");
+			rc = post("/sql_bprs/run");
+		});
+	
+		document.getElementById("button_clear").addEventListener("click", (e) => {
+			console.log("> Clear ID");
+			document.getElementById("id").value = "";
+		});
+	
+		document.getElementById("button_return").addEventListener("click", (e) => {
+			console.log("> Return");
+			location.href = "/";
+		});
+
+		if (document.getElementById("download_json") != null) {
+			document.getElementById("download_json").addEventListener("click", (e) => {
+				console.log("> Download (JSON)");
+				rc = download_json();
+			});
+		}
+
+		console.log("> result:", result)
+
+		var select_request_id = function(cell, formatterParams){ //plain text value
+		    return "<i class='ds-icon-document'></i>";
+		};
+
+		let request_list = new Tabulator("#sql_result", {
+			data: result,
+			layout:"fitColumns",
+			pagination: true, 
+			paginationSize: 20,
+			columns: [
+				{
+					formatter:select_request_id,
+					title: "",
+					field: "get_data",
+					width: 40,
+					hozAlign:"center",
+					cellClick:function(e, cell){
+						get_data(cell.getRow().getData().REQUEST_ID);
+					},
+				},
+				{
+					formatter: "textarea",
+					title: "Request ID",
+					field: "REQUEST_ID",
+					headerFilter:"input",
+				},
+				{
+					formatter: "textarea",
+					title: "サービス分類",
+					field: "CATEGORY_CODE",
+					headerFilter:"input",
+				},
+				{
+					formatter: "textarea",
+					title: "地区技術部コード",
+					field: "CS_REGION_CD",
+					headerFilter:"input",
+				},
+				{
+					formatter: "textarea",
+					title: "地区技術部 ",
+					field: "CS_REGION_NM",
+					headerFilter:"input",
+				},
+				{
+					formatter: "textarea",
+					title: "作成者ID",
+					field: "CREATE_ID",
+					headerFilter:"input",
+				},
+				{
+					formatter: "textarea",
+					title: "作成日",
+					field: "CREATE_TS",
+					headerFilter:"input",
+				}
+			]
+		});	
+
+		loader_elm.style.display = "none";
+	});
+	
+	const post = (url) => {
+		console.log("> url", url)
+
+		document.getElementById("loader").style.display = "block";
+//		document.getElementById("hidden_area_while_sql_is_running_1").style.display = "none";
+		document.getElementById("hidden_area_while_sql_is_running_2").style.display = "none";
+
+		var form = document.forms[0];
+		form.method = "POST";
+		form.action = url;
+		form.submit();
+	}
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+
+	const download = (file_name) => {
+		console.log("> Download file:", file_name);
+		source_file_name = "/download/" + file_name;
+		download_file_name = file_name;
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+
+	const download_json = () => {
+		source_file_name = "/download/" + sql_result_json;
+		download_file_name = sql_result_json;
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+	
+	
+	const get_data = (request_id) => {
+		console.log("> request_id", request_id);
+
+		document.getElementById("loader").style.display = "block";
+//		document.getElementById("sql_result").style.display = "none";
+		document.getElementById("hidden_area_while_sql_is_running_1").style.display = "none";
+		document.getElementById("hidden_area_while_sql_is_running_2").style.display = "none";
+
+		var form = document.forms[0];
+		form.method = "POST";
+		form.action = "/sql_bprs/get_data/" + request_id;
+		form.submit();
+	}
+	
+</script>
+
+<div id="hidden_area_while_sql_is_running_1">
+
+<form>
+<div class="ds-flex ds-flex-fill ds-flex-align-items-start ds-flex-row ds-flex-wrap ds-pad-t-1">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		HOST Node
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-10 ds-mar-l-1">
+		<% checked_qhbd = checked_qhcn = checked_qhea = checked_qhbo = checked_baiw = checked_temp = "" %>
+		<% if (host_node == "qhbd") { checked_qhbd = "checked" } %>
+		<% if (host_node == "qhcn") { checked_qhcn = "checked" } %>
+		<% if (host_node == "qhea") { checked_qhea = "checked" } %>
+		<% if (host_node == "qhbo") { checked_qhbo = "checked" } %>
+
+		<div class="ds-input-container ds-mar-0 ds-pad-0 ds-pad-0">
+			<div class="ds-input-radio-group ds-flex" role="host_node">
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhbd" class="ds-input" value="qhbd" <%= checked_qhbd %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhbd">QHBD</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhcn" class="ds-input" value="qhcn" <%= checked_qhcn %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhcn">QHCN</label>
+				</div>
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhea" class="ds-input" value="qhea" <%= checked_qhea %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhea">QHEA</label>
+				</div>
+<!--
+				<div class="ds-input-radio ds-mar-r-1">
+					<input type="radio" name="host_node" id="host_node_qhbo" class="ds-input" value="qhbo" <%= checked_qhbo %>>
+					<div class="ds-input-control"></div>
+					<label for="host_node_qhbo">QHBO</label>
+				</div>
+-->
+			</div>
+
+<!--
+			<details class="ds-text-small">
+				<summary class="list">
+					<span class="ds-text-small ds-text-neutral-5">
+					MF DB2 Setup
+					</span>
+				</summary>
+				<span class="ds-mar-0 ds-pa-0 ds-text-italic ds-text-neutral-5">
+					<ul>
+						<li>
+						<%= db2_server_info.qhbd %>
+						<li>
+						<%= db2_server_info.qhcn%>
+						<li>
+						<%= db2_server_info.qhea %>
+						<li>
+						<%= db2_server_info.qhbo %>
+					</ul>
+				</span>
+			</details>
+-->
+		</div>
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-pad-l-1 ds-col-8">
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap ds-pad-0">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		User ID
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<div class="ds-input-container ds-mar-0 ds-pad-0">
+			<input type="text" class="ds-input ds-small" id="userid" name="userid" value="<%= uid %>">
+		</div>
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-pad-l-1 ds-col-7">
+		<span class="ds-text-small ds-text-italic">
+		</span>
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		Password
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<div class="ds-input-container ds-mar-0 ds-pad-0">
+			<input type="password" class="ds-input ds-small" id="password" name="password" value="<%= pw %>">
+		</div>
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap ds-pad-t-1">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		Request ID
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<div class="ds-input-container ds-mar-0 ds-pad-0">
+			<input type="text" class="ds-input ds-small" id="request_id" name="request_id" value="<%= request_id %>">
+		</div>
+	</div>
+</div>
+
+- OR -
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-wrap">
+	<div class="ds-mar-0 ds-pad-0 ds-col-1">
+		Create TS
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<input type="date" class="ds-input ds-small" id="create_ts_from" name="create_ts_from" value="<%= create_ts.from %>">
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-mar-l-1 _ds-col-1">
+		to
+	</div>
+	<div class="ds-mar-0 ds-pad-0 ds-col-3 ds-mar-l-1">
+		<input type="date" class="ds-input ds-small" id="create_ts_to" name="create_ts_to" value="<%= create_ts.to %>">
+	</div>
+</div>
+
+</form>
+
+</div>
+
+<div id="hidden_area_while_sql_is_running_2">
+
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0 ds-mar-t-b-1">
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-play-filled-alt" id="button_run_sql">
+	Run
+	</button>
+
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-return" id="button_clear">
+	Clear
+	</button>
+
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-arrow-left" id="button_return">
+	Return
+	</button>
+</div>
+
+
+<div class="ds-mar-0 ds-pad-0 ds-icon-box">
+	Result
+</div>
+
+<%# if (status == "normal_end") { %>
+
+<div id="sql_result"></div>
+
+<%# } %>
+
+</div>
+
+<!-- LOADER -->
+<div id="loader" class="ds-pad-t-b-2">
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container ds-text-align-center">
+			<span class="ds-icon-sentiment-smile" tabindex="0" role="text" aria-label="admin"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+</p>
+</body>
+</html>

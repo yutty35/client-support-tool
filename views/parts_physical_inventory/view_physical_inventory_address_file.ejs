@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Converter - Parts Physical Inventory - Address List参照</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+    
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+
+		<!-- JQuery from Google site -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body class="ds-has-sticky-footer" _onload="setColor();">
+	
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">レポート変換ツール</h1>
+							<p class="ds-mar-0">
+<!--- w3ds template --->
+
+(view_physical_inventory_address_file.ejs)
+
+<h2>
+<span class="ds-icon-menu" tabindex="0" role="text" aria-label="admin">
+Parts Physical Inventory - Address List
+</h2>
+
+<ul>
+	<li>
+	修正する場合は再度EXCELファイルをアップロード
+</ul>
+
+<script nonce=<%- nonce %>>
+	window.addEventListener("load", () => {
+		document.getElementById("return").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+
+		document.getElementById("return2").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+	});
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+</script>
+<div class="ds-button-group-h ds-row ds-pad-0 ds-pad-b-1 ds-mar-0">
+	<button class="ds-col-2 ds-offset-0 ds-button ds-basic ds-truncate" id="return">
+	<span class="ds-icon-arrow-left" tabindex="0" role="text" aria-label="admin">
+	戻る</span></button>
+</div>	
+
+<div class="ds-table-container ds-col-6">
+	<table class="ds-table ds-table-compact ds-striped ds-mar-0 ds-pad-0 ">
+		<tr class="ds-bg-contextual-blue-3">
+			<th>ストック</th><th>グループ</th>
+		</tr>
+<% address_list.forEach(function (data) { %>
+<% if (data[0] != "") { %>
+		<tr>
+			<td>
+				<%= data[0] %>
+			</td>
+			<td>
+				<%= data[1] %>
+			</td>
+		</tr>
+<% } %>
+<% }); %>
+	</table>
+</div>
+
+<div class="ds-button-group-h ds-row ds-pad-0 ds-pad-t-1 ds-mar-0">
+	<button class="ds-col-2 ds-offset-0 ds-button ds-basic ds-truncate" id="return2">
+	<span class="ds-icon-arrow-left" tabindex="0" role="text" aria-label="admin">
+	戻る</span></button>
+</div>	
+
+<!--- w3ds template --->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="ds-sticky-footer ds-grid ds-bg-neutral-warm-2" style="width: 100%; height: 110px;" >
+			<div class="ds-row">
+				<h5 class="ds-offset-xs-1 ds-col-xs-10 ds-pad-t-2_5 ds-heading-5">
+					<span class="ds-icon-github-l" style="vertical-align: middle;"></span>
+					<a href="https://github.ibm.com/w3/w3DS" target="_blank" class="ds-text-neutral-6 ds-font-weight-light">w3DS on GitHub</a>
+				</h5>
+			</div>
+		</footer>
+		<script src="/w3ds/w3ds.js"></script>
+	</body>
+</html>

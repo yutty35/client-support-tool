@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Cloudant Download</title>
+		<link rel="stylesheet" href="../w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="../w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="../w3ds/w3ds-prism.css" rel="text/css" />
+	</head>
+	<body class="ds-has-sticky-footer">
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-xs-10 ds-offset-xs-1 ds-pad-b-3">
+							<!-- img src="../images/w3ds-logo.svg" class="ds-pad-b-1" alt="w3DS" -->
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">
+							<span class="ds-icon-download ds-icon-large ds-tooltip-trigger" tabindex="0" role="text" aria-label="admin"></span>
+							Cloudant Download</h1>
+							<p class="ds-mar-b-2">
+<!--- w3ds template --->
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<script nonce=<%- nonce %>>
+	zip_file_name = "<%= zip_file_name %>";
+	all_data = <%- JSON.stringify(all_data) %>;
+
+	window.addEventListener("load", () => {		
+		document.getElementById("return_to_home").addEventListener("click", (e) => {
+			redirectTo("/");
+		});
+
+/*
+		document.getElementById("get_data").addEventListener("click", (e) => {			
+			console.log("> Get Data");
+
+			document.getElementById("loader").style.display = "block";
+
+			rc = post("/cloudant_download/get_data");
+		});
+*/
+		document.getElementById("get_data").addEventListener("click", (e) => {	
+			document.getElementById("loader").style.display = "block";
+			document.getElementById("result").style.display = "none";
+		});
+
+		document.getElementById("download").addEventListener("click", (e) => {
+			console.log("> Download ZIP file");
+			rc = download();
+		});
+
+		if (zip_file_name == "") {
+			document.getElementById("result").style.display ="none";
+		}
+/*		
+		if (all_data.length == 0) {
+			document.getElementById("all_data").style.display ="none";
+		}
+*/
+	});
+
+	const post = (url) => {
+		console.log(url)
+		var form = document.forms[0];
+		form.method = "POST";
+		form.action = url;
+		form.submit();
+	}
+
+
+	const download = () => {
+		//
+		// ダウンロードボタンを消去
+		//
+//		document.getElementById("download").style.display ="none";
+		
+		//
+		// Zipファイルのダウンロード
+		//
+//		source_file_name = zip_file_name.slice(8);
+		source_file_name = zip_file_name;
+ 		download_file_name = source_file_name.slice(source_file_name.lastIndexOf("/") + 1);
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+</script>
+
+<div class="homeButton">
+	<button class="ds-button _ds-flat _ds-basic _ds-bg-contextual-blue-3" id="return_to_home">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1">
+	</span>
+	</button>
+</div>
+
+<form>
+
+<span class="ds-icon-request-quote ds-font-weight-bold">
+	Credentials
+</span>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-align-items-start ds-mar-0 ds-pad-0 ds-pad-t-1">
+	<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-1">
+		URL
+	</div>
+	<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-10">
+		<input type="text" class="ds-input" id="url" name="url" placeholder="url">
+	</div>
+</div>
+
+<div class="ds-flex ds-flex-fill ds-flex-align-items-center ds-flex-row ds-flex-align-items-start ds-mar-0 ds-pad-0 ds-pad-t-1">
+	<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-1">
+		API Key
+	</div>
+	<div class="ds-input-container ds-mar-0 ds-pad-0 ds-col-10">
+		<input type="text" class="ds-input" id="apikey" name="apikey" placeholder="apikey">	
+	</div>
+</div>
+
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0 ds-mar-t-1">
+	<button class="ds-button ds-basic ds-col-3 ds-icon-cloud-download" id="get_data" name="get_data" formMethod="post" formAction="/cloudant_download/get_data">
+	Get Data
+	</button>
+
+	<button class="ds-button ds-basic ds-col-3 ds-icon-reset" formMethod="get" formAction="/cloudant_download/clear">
+	Clear
+	</button>
+</div>
+
+</form>
+
+<!--
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0 ds-mar-t-1">
+	<button class="ds-button ds-basic ds-col-3 ds-icon-cloud-download" id="get_data" name="get_data" _formMethod="get" _formAction="/cloudant_download/get_data">
+	Get Data
+	</button>
+
+	<button class="ds-button ds-basic ds-col-3 ds-icon-search" formMethod="get" formAction="/cloudant_download/clear">
+	Clear
+	</button>
+</div>
+-->
+
+<!-- LOADER -->
+<div id="loader" class="ds-pad-t-b-2" hidden>
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container ds-text-align-center">
+			<span class="ds-icon-sentiment-smile" tabindex="0" role="text" aria-label="admin"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="result" class="ds-mar-0 ds-pad-0 ds-pad-t-1">
+	<span class="ds-icon-download"></span>
+	Downloading of Cloudant data are completed.
+	<ul>
+		<li>URL: <%= url %>
+		<li>API: <%= api %>
+	</ul>
+	<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0">
+		<button class="ds-button ds-basic ds-col-3 ds-icon-zip" id="download" name="download">
+		Download
+		</button>
+	</div>
+
+<!--
+<%# keys = Object.keys(all_data) %>
+<%# for (i = 0; i < keys.length; i++) { %>
+	<%# key = Object.keys(all_data[keys[i]]) %>
+	
+	<details>
+		<summary class="list">
+			<span class="ds-text-small ds-text-neutral-5">
+			<%#= keys[i] %>
+			</span>
+		</summary>
+		<div class="ds-text-small ds-text-neutral-5">
+			<span class="ds-text-small">
+			<pre>
+<%#= JSON.stringify(all_data[keys[i]], null, "\t") %>
+			</pre>
+			</span>
+		</div>
+	</details>
+
+<%# } %>
+-->
+
+</div>
+
+<style>
+details summary {
+  list-style: none;
+  color: #8D8D8D;
+}
+
+details summary::before {
+	content: "+";
+}
+details[open] summary::before {
+	content: "-";
+}
+</style>
+
+<pre>
+</pre>
+
+</body>
+</html>

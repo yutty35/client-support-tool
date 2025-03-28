@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="EN" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BPRS SQL Result</title>
+		<link rel="stylesheet" href="/w3ds/w3ds.css" type="text/css">
+
+		<!-- if data tables are required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-data-tables.css" type="text/css">
+	
+		<!-- if code syntax highlighting is required -->
+		<link rel="stylesheet" href="/w3ds/w3ds-prism.css" rel="text/css" />
+
+		<!-- https://tabulator.info -->
+		<!-- https://oopsoop.com/tabulator/ -->
+		<link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+	</head>
+	<body class="ds-has-sticky-footer">
+
+<!--
+	Return to Home
+-->
+<style>
+.homeButton {
+	width: 60px;
+	position:fixed;
+	z-index:1;
+	top: 0%;
+	right: 0px;
+}
+</style>
+
+<!--
+	Styles for details tag
+-->
+<style>
+	details summary.search {
+		list-style: none;
+		display: block;
+		color: #000000;
+	}
+	
+	details summary.list {
+		list-style: none;
+		color: #FFFFFF;
+		display: block;
+	}
+	
+	<!--
+		for Safari and Chrome
+	-->
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	
+	details summary::before {
+		content: "+";
+	}
+	details[open] summary::before {
+		content: "-";
+	}
+</style>
+
+<div class="homeButton">
+	<span class="ds-icon-home ds-icon-large ds-text-neutral-1" tabindex="0" role="text" aria-label="admin">
+	</span>
+	</button>
+</div>
+
+<div class="copyToClipBpard">
+	<span id="copy_to_clipboard" class="ds-text-align-center"></span>
+</div>
+
+
+		<div class="ds-grid">
+			<div class="ds-row">
+				<div class="ds-col-12">
+					<div class="ds-row ds-pad-t-3">
+						<div class="ds-col-10 ds-offset-1 ds-pad-b-3">
+							<h1 class="ds-heading-md-2 ds-heading-lg-1">
+							<span class="ds-icon-text-align-justify _ds-text-contextual-blue-4 ds-icon-large ds-tooltip-trigger" tabindex="0" role="text" aria-label="admin"></span>
+							GET BPRS Data</h1>
+							<p class="ds-mar-b-2">
+<!--- w3ds template --->
+
+<script nonce=<%- nonce %>>
+	request_id = "<%= request_id %>";
+	create_ts = <%- JSON.stringify(create_ts) %>;
+	result_request = <%- JSON.stringify(result_request) %>;
+	result_file = <%- JSON.stringify(result_file) %>;
+	result_item = <%- JSON.stringify(result_item) %>;
+	status = "<%= status %>";
+	attachment_files = <%- JSON.stringify(attachment_files) %>;
+//	sql_result_excel = "<%#= sql_result_excel %>";
+//	sql_result_json = "<%#= sql_result_json %>";
+	time = <%- JSON.stringify(time) %>;
+	console.log(time)
+	
+//	console.log(request_id, sql_result_excel, sql_result_json, status);
+
+	window.addEventListener('load', () => {
+		loader_elm = document.getElementById("loader")
+		loader_elm.style.display = "block";
+
+		//
+		// Buttons
+		//
+		document.getElementById("button_return").addEventListener("click", (e) => {
+			console.log("> Return");
+			location.href = "/sql_bprs";
+		});
+
+		if (document.getElementById("download_json") != null) {
+			document.getElementById("download_json").addEventListener("click", (e) => {
+				console.log("> Download (JSON)");
+				rc = download_json();
+			});
+		}
+
+	//	console.log("> result_request:", result_request)
+
+		var copy_text_param = function(cell, formatterParams){ //plain text value
+		    return "<i class='ds-icon-copy'></i>";
+		};
+
+		if (result_request.length != 0) {
+			//
+			// BID_REQUESTの表示 (result_request)
+			//
+			let request_list = new Tabulator("#sql_result", {
+				data: result_request,
+				layout:"fitColumns",
+				pagination: false, //ページネーションを無効化
+				columns: [
+					{
+						title: "Item",
+						field: "description",
+						formatter: "textarea",
+						width: 220
+					},
+					{
+						title: "Table Name",
+						field: "table_name",
+						formatter: "plaintext",
+						width: 180
+					},
+					{
+						title: "Column Name",
+						field: "column_name",
+						formatter: "plaintext",
+						width: 180
+					},
+					{
+						title: "Data",
+						field: "data",
+						formatter: "textarea",
+					},
+					{
+						formatter:copy_text_param,
+						title: "",
+						field: "copy_test",
+						width: 40,
+						hozAlign:"center",
+						cellClick:function(e, cell){
+							if (cell.getRow().getData().data != null) {
+								copy_text(cell.getRow().getData().data);
+							}
+						},
+					},
+				]
+			});	
+		}
+
+
+		//
+		// Attachment Files
+		//
+		download_files = [];
+		content_block = document.getElementById("attachment_files");
+
+		if (attachment_files.length > 0) { 
+			for (let i = 0; i < attachment_files.length; i++) {
+				download_files.push({ file_name: attachment_files[i] });
+			}
+		}
+
+		var download_file_param = function(cell, formatterParams){ //plain text value
+		    return "<i class='ds-icon-download'></i>";
+		};
+
+		let download_file_table = new Tabulator("#download_file_table", {
+			data: download_files,
+			layout:"fitColumns",
+			pagination: false, //ページネーションを無効化
+			columns: [
+				{
+					formatter:download_file_param,
+					title: "",
+					field: "download",
+					width: 40,
+					hozAlign:"center",
+					cellClick:function(e, cell){
+						download(cell.getRow().getData().file_name);
+					},
+				},
+				{
+					formatter: "textarea",
+					title: "File Name",
+					field: "file_name",
+				}
+			]
+		});
+
+/*
+		if (result_item.length != 0) {
+			//
+			// BID_ITEM_SUMMARY & DETAILの表示
+			//
+			let request_list = new Tabulator("#sql_result_item", {
+				data: result_item,
+				layout:"fitColumns",
+				pagination: false, //ページネーションを無効化
+				columns: [
+					{
+						title: "Item",
+						field: "description",
+						formatter: "textarea",
+					},
+				]
+			});	
+		}
+*/
+
+//		console.log("> content_block", content_block)
+
+		loader_elm.style.display = "none";
+	});
+	
+	const redirectTo = (url) => {
+		location.href = url;
+	}
+
+	const download = (file_name) => {
+		console.log("> Download file:", file_name);
+		source_file_name = "/download/" + file_name;
+		download_file_name = file_name;
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+
+	const download_json = () => {
+		source_file_name = "/download/" + sql_result_json;
+		download_file_name = sql_result_json;
+	
+		var dl = new XMLHttpRequest();
+		dl.open("GET", source_file_name, true);
+		dl.responseType = "blob";
+		dl.onload = function (oEvent) {
+			var blob = dl.response;
+			var objectURL = window.URL.createObjectURL(blob);
+	
+			var link = document.createElement("a");
+			document.body.appendChild(link);
+			link.href = objectURL;
+			link.download = download_file_name;
+			link.click();
+			document.body.removeChild(link);
+		};
+	
+		dl.send();
+	}
+	
+	const get_data = (request_id) => {
+		console.log("> request_id", request_id)
+
+		var form = document.forms[0];
+		form.method = "POST";
+		form.action = "/sql_bprs/get_data/" + request_id;
+		form.submit();
+	}
+
+	//
+	// Copy to Clipboard
+	//
+	const copy_text = (text) => {
+		console.log("> Copy text:", text)
+		navigator.clipboard.writeText(text).then(() => {
+
+			html = "<div class='ds-alert ds-success ds-mar-0 ds-pad-1 ds-slide-right'><span class='ds-icon-copy'> Copied to clipbopard : " + text + "</span></span>";
+			document.getElementById("copy_to_clipboard").innerHTML = html;
+	
+			setTimeout(() => {
+				document.getElementById("copy_to_clipboard").innerHTML = "";
+			}, 1000);
+
+		}, () => {
+			// when failed to copy clipboard
+		});
+	}
+</script>
+
+<h3>Tables: BID_REQUEST + BID_PROCESS + BID_PARAM_CTRL + BID_FACT_SHEET & BID_FILE</h3>
+
+
+
+
+<div class="ds-button-group-h ds-row ds-mar-0 ds-pad-0 ds-mar-t-b-1">
+	<button class="ds-button ds-basic ds-small ds-truncate ds-col-2 ds-icon-arrow-left" id="button_return">
+	Return
+	</button>
+</div>
+
+<!-- LOADER -->
+<div id="loader" class="ds-pad-t-b-2" _hidden>
+	<div class="ds-loader">
+		<div class="ds-loader-container">
+			<div class="ds-loader-container ds-text-align-center">
+			<span class="ds-icon-sentiment-smile" tabindex="0" role="text" aria-label="admin"></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% if (status == "normal_end") { %>
+
+<div class="ds-mar-0 ds-pad-0 ds-icon-box">
+Result:
+</div>
+
+<div class="ds-accordion-container" aria-labelledby="">
+    <div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="">
+        <button class="ds-accordion-title ds-bg-contextual-blue-3">
+        	BID_REQUEST + BID_PROCESS + BID_PARAM_CTRL + BID_FACT_SHEET
+        </button>
+        <div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<div class="ds-mar-0 ds-pad-0" id="sql_result"></div>
+        </div>
+	</div>
+
+    <div class="ds-row ds-accordion-item" aria-controls="ds-accordion-slidedown" role="">
+        <button class="ds-accordion-title ds-bg-contextual-blue-3">
+        	BID_FILE (Attachment Files)
+        </button>
+        <div class="ds-accordion-slidedown" aria-hidden="true" role="region">
+			<div class="ds-mar-0 ds-pad-0" id="download_file_table"></div>
+        </div>
+	</div>
+</div>
+
+
+Elapsed time:
+<br>
+REQUEST DATA : <%= time.elapsed_time.request_data %> sec
+<br>
+ATTACHMENT FILE (Download) : <%= time.elapsed_time.attachment_file_download %> sec
+<br>
+ATTACHMENT FILE (Convert) : <%= time.elapsed_time.attachment_file_convert %> sec
+<br>
+ITEM: <%= time.elapsed_time.item %> sec
+
+
+<% } %>
+
+</p>
+</body>
+
+<script src="/w3ds/w3ds.js"></script>
+</html>
