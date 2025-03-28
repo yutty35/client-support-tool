@@ -1,0 +1,16 @@
+apiVersion: automation.cio/v1alpha1
+kind: RepositoryConfig
+ealImapNumber: EAL-007599
+build:
+  strategy: cirrus-deployment
+  pipeline: nodejs-v20-npm-container-image
+  version: v1
+  config:
+    cirrus-project-name: csit-jp-portal
+    cirrus-pipeline-name: client-support-tool-cicd2
+    service-port: '6001'
+    cirrus-region: wdc-containers
+    cirrus-api-username: "encrypted:v1:AAABiivtquSdGrfnCcDi+o513tqN5mhaqo8z4j9ofZw/iPR+d4kqB1JRrIH9ABz80bhZnP781U+XtipcXhnLdXAjTX9jpbcx9d/iMI1fouZ93euwjO3OJXWLI88aWjY7QcH1BNz9D8LL4wI4eRPZCaAvvB8p686hpFokbk3Act2NRq/Hm0Y0yOgplXmCZgJN3V8="
+    cirrus-api-password: "encrypted:v1:AAABiivtquQppVO4ghebsAOluC4C93uYxMl3/5guYQknOpFFW5ImZWcyt7ZKWpC9ZugFOJqF7gxxHmya1zX0Spb5U0KlVxODZPXNDrE7Qesl9dJ9HNk3NAuLCnpmpPBLX9qySuevwMR5XUB1bC5pz+KoYQEp8NW0X5oZekX01ixLMRTF/WSQKxlHPT2VORjnhJe6XcY0w80ibUKQ6DKj8rj3AOCySP27DukV2Pkxeg=="
+    install-packages-ci: python3 gcc-c++ make python3-devel openssl-devel bzip2-devel
+    install-packages-app: libxcrypt libxcrypt-compat pam
